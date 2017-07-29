@@ -14,15 +14,6 @@ var locations = [{
         description: ' one of the Biggest mall in Alexandria on ariver.'
     },
     {
-        title: 'Dandy mega mall',
-        location: {
-            lat: 30.064334,
-            lng: 31.027134
-        },
-        address: 'Alexandria Desert Rd Giza Governorate',
-        description: 'This was the first mall opened in this area near beside the smart village in Giza Egypt. '
-    },
-    {
         title: 'Cairo Festival City',
         location: {
             lat: 30.028461,
@@ -32,13 +23,13 @@ var locations = [{
         description: 'Cairo Festival City is a visionary mixed-use urban community strategically located at the gateway to New Cairo city.'
     },
     {
-        title: 'CityStars',
+        title: 'Dandy mega mall',
         location: {
-            lat: 30.075086,
-            lng: 31.346283
+            lat: 30.064334,
+            lng: 31.027134
         },
-        address: 'Omar Ibn El-Khattab, Masaken Al Mohandesin, Nasr City, Cairo Governorate',
-        description: 'Building on our previous achievements and unique position in the Egyptian market,Citystars Heliopolis in Cairo'
+        address: 'Alexandria Desert Rd Giza Governorate',
+        description: 'This was the first mall opened in this area near beside the smart village in Giza Egypt. '
     },
     {
         title: 'Mall of Arabia',
@@ -57,6 +48,15 @@ var locations = [{
         },
         address: 'Al Wahat Road Giza، 6th of October City، Giza Governorate',
         description: 'Mall of Arabia is Egypt Biggest Mall in terms of space and number of stores'
+    },
+    {
+        title: 'CityStars',
+        location: {
+            lat: 30.075086,
+            lng: 31.346283
+        },
+        address: 'Omar Ibn El-Khattab, Masaken Al Mohandesin, Nasr City, Cairo Governorate',
+        description: 'Building on our previous achievements and unique position in the Egyptian market,Citystars Heliopolis in Cairo'
     }
 ];
 
@@ -101,16 +101,15 @@ function initMap() {
         marker.addListener('click', function () {
             populateInfoWindow(this, largeInfowindow);
         });
-
+locations[i].locationMark=marker;
     }
     map.fitBounds(bounds);
     ko.applyBindings(new AppViewModel());
 }
+
 //this function popualates the infowindow when the marker is clicked.
-//one infowindow which will open at the marker that is clicked and populate based
-//on that markers position.
 function populateInfoWindow(marker, infowindow) {
-    //it's mean marker info isn't open and if isn't open it
+    //it's mean marker info isn't open and if isn't, open it.
     if (infowindow.marker != marker) {
         infowindow.marker = marker;
         //wiki url search for ajax
@@ -128,7 +127,7 @@ function populateInfoWindow(marker, infowindow) {
             success: function (response) {
                 var articleList = response[1];
                 var url = 'http://en.wikipedia.org/wiki/' + articleList[0];
-                //undefined function to separate who has link on wiki to put it or not after ajax response
+                //this function to separate who has link on wiki to put it or not after ajax response
                 if (!url.includes('undefined')) {
                     infowindow.setContent('<div id="infobox"><h3>' + marker.title + '</h3>' + '<br><h4>address:</h4><p>' + marker.address + '</p></br>' + '<h4>description:</h4><p>' + marker.description + '<br />Wiki Page:<br /><a href="' + url + '">' + url + '</a></br></div');
                 } else {
@@ -146,32 +145,30 @@ function populateInfoWindow(marker, infowindow) {
     }
 }
 
+//i get some help from github and by searching in google to complete this part's methods&function
 // VM ViewModel
 var AppViewModel = function () {
-    //declaring self to make sure that the object knows its own items
+    //vm variables
     var self = this;
     self.details = ko.observable();
     self.title = ko.observable();
-    // self.marker = ko.observableArray([]);
     self.locations = ko.observable(locations);
-    self.click = function (locations, marker, locationObject) {
-        map.setZoom(12);// zoom when name is clicked from the list
+    self.click = function (locations, marker, locationMark) {
+        map.setZoom(10);// zoom when name is clicked from the list
         map.setCenter(locations.location);// this to center the markers in map
-        //this event not happening while i click list element
-        google.maps.event.trigger(locations.locationObject, 'click');
-        // google.maps.event.trigger(loadData.details, 'click');
+        google.maps.event.trigger(locations.locationMark, 'click');//it happend when i clicked
     };
     self.query = ko.observable('');
-    //for filtering in search
+    //for search filtering
     self.search = ko.computed(function () {
         var newArray = ko.utils.arrayFilter(self.locations(), function (place) {
             if (place.title.toLowerCase().indexOf(self.query().toLowerCase()) >= 0) {
-                if (place.locationObject) {
-                    place.locationObject.setVisible(true);
+                if (place.locationMark) {
+                    place.locationMark.setVisible(true);
                 }
                 return true;
             } else {
-                place.locationObject.setVisible(false);
+                place.locationMark.setVisible(false);
             }
         });
         return newArray;
