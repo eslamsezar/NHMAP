@@ -10,6 +10,6 @@ search for malls to know the adress and location
 ## resources:
 *Google Maps API : (https://developers.google.com/maps)
 *Udacity Discussion Forum - front end
-*KnockoutJS : http://knockoutjs.com
-*(https://www.stackoverflow.com)
-*(https://www.w3schools.com)
+*KnockoutJS : (http://knockoutjs.com)
+*stackoverflow: (https://www.stackoverflow.com)
+*w3schools: (https://www.w3schools.com)
