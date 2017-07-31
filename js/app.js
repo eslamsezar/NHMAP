@@ -98,9 +98,7 @@ function initMap() {
         bounds.extend(marker.position);
 
         //creat an onclick event to open an infowindows at each marker.
-        marker.addListener('click', function () {
-            populateInfoWindow(this, largeInfowindow);
-        });
+        marker.addListener('click', makeInfoWindow(marker, largeInfowindow));
 locations[i].locationMark=marker;
     }
     map.fitBounds(bounds);
@@ -143,6 +141,13 @@ function populateInfoWindow(marker, infowindow) {
             infowindow.setMarker(null);
         });
     }
+}
+
+function makeInfoWindow(marker, infoWindow) {
+
+    return function () {
+        populateInfoWindow(marker, infoWindow);
+    };
 }
 
 //i get some help from github and by searching in google to complete this part's methods&function
